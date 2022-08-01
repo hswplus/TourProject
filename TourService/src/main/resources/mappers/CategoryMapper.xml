@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="edu.ln.tour.dao.CategoryDao">
+
+    <select id="findAllCategory" resultType="Category">
+        select * from tab_category order by cid
+    </select>
+
+    <insert id="insert" parameterType="Category">
+        <selectKey resultType="java.lang.Integer" keyColumn="cid" keyProperty="cid" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into tab_category(cname) values (#{cname})
+    </insert>
+
+    <insert id="insertCategoryAndRouteRelation" parameterType="map">
+        insert  into tab_category_route(cid,rid) values (#{cid},#{rid})
+    </insert>
+
+
+    <delete id="deleteCategoryAndRouteRelationsByCid" parameterType="int">
+        delete from tab_category_route where cid =#{cid}
+    </delete>
+
+    <insert id="insertCategroyAndRouteRelations" parameterType="map">
+        insert into tab_category_route(rid,cid) values (#{rid},#{cid})
+    </insert>
+    <delete id="deleteByCid" parameterType="int">
+        delete from tab_category where cid =#{cid}
+    </delete>
+</mapper>

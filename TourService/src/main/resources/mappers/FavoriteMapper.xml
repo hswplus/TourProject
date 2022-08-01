@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="edu.ln.tour.dao.FavoriteDao">
+
+    <select id="selectByRidAndUid" resultType="Favorite">
+        select * from tab_favorite where rid=#{rid} and uid=#{uid}
+    </select>
+    <insert id="addFavorite" parameterType="Favorite">
+        insert into tab_favorite(rid,date,uid) values(#{rid},#{date},#{uid})
+    </insert>
+    <delete id="deleteByRidAndUid" parameterType="Favorite">
+        delete from tab_favorite where rid=#{rid} and uid=#{uid}
+    </delete>
+    <select id="selectMyFavoriteByUid" parameterType="int" resultType="Route">
+        select r.* from tab_favorite f,tab_route r where uid=#{uid} and  r.rid=f.rid
+    </select>
+</mapper>

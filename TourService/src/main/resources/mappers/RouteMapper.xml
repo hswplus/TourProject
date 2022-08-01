@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="edu.ln.tour.dao.RouteDao">
+
+    <select id="findAll" resultType="Route">
+        select * from tab_route
+    </select>
+    <resultMap id="routeWithSeller" type="Route">
+        <id column="rid" property="rid"/>
+        <result column="rname" property="rname"/>
+        <result column="price" property="price"/>
+        <result column="routeIntroduce" property="routeIntroduce"/>
+        <result column="rflag" property="rflag"/>
+        <result column="rdate" property="rdate"/>
+        <result column="count" property="count"/>
+        <result column="rimage" property="rimage"/>
+        <result column="sid" property="sid"/>
+        <association property="seller" javaType="Seller">
+            <id column="sid" property="sid"/>
+            <result column="sname" property="sname"/>
+            <result column="consphone" property="consphone"/>
+            <result column="address" property="address"/>
+        </association>
+    </resultMap>
+    <select id="selectByIdWithSeller" parameterType="int" resultMap="routeWithSeller">
+        select * from tab_route r left join tab_seller s on r.sid = s.sid where r.rid = #{rid}
+    </select>
+
+    <select id="findAllWithSeller" parameterType="int" resultMap="routeWithSeller">
+        select * from tab_route r left join tab_seller s on r.sid = s.sid
+    </select>
+
+    <!-- 根据cid查找产品线路
+    List<Route> findRouteByCid(int cid);-->
+    <select id="findRouteByCid" parameterType="int" resultType="Route">
+        select t1.* from tab_route t1 left join tab_category_route t2 on t1.rid = t2.rid where 1 = 1
+        <if test="cid != null and cid > 0">
+            and t2.cid = #{cid}
+        </if>
+    </select>
+
+    <!--    Page<Route> selectPageByCid(Integer cid, String queryString);-->
+    <select id="selectPageByCid" resultType="Route">
+        select t1.* from tab_route t1 left join tab_category_route t2 on t1.rid = t2.rid where rflag != 0
+        <if test="cid != null and cid > 0">
+            and t2.cid = #{cid}
+        </if>
+        <if test="queryString != null and queryString.length > 0 and queryString != '%null%'">
+            and t1.rname like #{queryString}
+        </if>
+    </select>
+
+    <!--    List<Route> selectByCountDescLimit(Integer count);-->
+    <select id="selectByCountDescLimit" parameterType="int" resultType="Route">
+        SELECT * FROM tab_route ORDER BY COUNT DESC LIMIT #{count}
+    </select>
+
+    <select id="selectRouteAndSellerByRid" parameterType="int" resultMap="routeWithSeller">
+        SELECT * FROM tab_route t1,tab_seller t2 WHERE t1.sid = t2.sid AND t1.rid=#{rid}
+    </select>
+
+    <update id="updateCountAddByRid" parameterType="int">
+        update tab_route set count =count + 1 where rid=#{rid}
+    </update>
+    <update id="updateCountSubByRid" parameterType="int">
+        update tab_route set count =count - 1 where rid=#{rid}
+    </update>
+
+    <delete id="removeRouteByRid" parameterType="int">
+        delete from tab_route where rid =#{rid}
+    </delete>
+    <delete id="removeRouteAndFavoriteRelationsByRid" parameterType="int">
+        delete from tab_favorite where rid =#{rid}
+    </delete>
+    <delete id="removeRouteAndRouteImgRelationsByRid" parameterType="int">
+        delete from tab_route_img where rid =#{rid}
+    </delete>
+    <delete id="removeRouteAndCategoryRouteRelationsByRid" parameterType="int">
+        delete from tab_category_route where rid =#{rid}
+    </delete>
+
+
+    <update id="changeStatus">
+        update tab_route set rflag=#{rflag} where rid=#{rid}
+    </update>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="edu.ln.tour.dao.UserDao">
+
+    <select id="findAll" resultType="User">
+        select * from tab_user
+    </select>
+
+    <!--    User selectOneByUsername(String username);-->
+    <select id="selectOneByUsername" resultType="User">
+        select * from tab_user where username=#{username}
+    </select>
+
+    <!--    User selectByCode(String code);-->
+    <select id="selectByCode" resultType="User">
+        select * from tab_user where  code=#{code}
+    </select>
+
+    <!-- User selectByUsernameAndPassword(User user)-->
+    <select id="selectByUsernameAndPassword" resultType="User">
+        select * from tab_user where  username=#{username} and password=#{password}
+    </select>
+
+    <update id="updateStatus">
+        update tab_user set status=#{status} where uid=#{uid}
+    </update>
+</mapper>
